@@ -1,10 +1,9 @@
-package com.example.karth.courseapp;
+package com.example.gradeviewer;
 
 import java.util.Random;
 
 public class Assignment {
-    private static int assID = 0;
-
+    private static int assID = 1;
     private String assignmentTitle;
     private int assignmentGrade;
 
@@ -26,7 +25,16 @@ public class Assignment {
         return assignmentTitle;
     }
 
-    public static int getAssID() {
+    public int getAssignmentGrade() {
+        return assignmentGrade;
+    }
+
+    public int getAssID() {
         return assID;
     }
+
+    static public void resetAssID(){
+        assID = 1;
+    }
+
 }

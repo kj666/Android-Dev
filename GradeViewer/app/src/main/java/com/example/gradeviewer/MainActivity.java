@@ -16,15 +16,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         setupUI();
-        textView.setText("Grade is 100%");
     }
 
+    //Initialize the layout components
     protected void setupUI(){
         textView = (TextView) findViewById(R.id.textView);
         viewGradeButton = (Button) findViewById(R.id.viewGradeButton);
 
+        //Listen if the buttons is clicked
         viewGradeButton.setOnClickListener(onClickViewGradeButton);
     }
 
