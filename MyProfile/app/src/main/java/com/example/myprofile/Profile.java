@@ -15,7 +15,7 @@ import android.widget.Toast;
 public class Profile extends AppCompatActivity {
 
     private SharedPreferenceController controller;
-
+    private ProfileObj profile;
     protected EditText editName, editAge, editID;
     protected Button saveButton;
     protected boolean editable = true;
@@ -39,15 +39,18 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                controller.setProfileName(editName.getText().toString());
                 int ageValue = Integer.valueOf(editAge.getText().toString());
                 int idValue = Integer.valueOf(editID.getText().toString());
                 //validate age
-                if(ageValue>18 && ageValue <100){
-                    controller.setProfileAge(Integer.parseInt(editAge.getText().toString()));
+                if(ageValue>17 && ageValue <100){
                     //validate ID
                     if(idValue<1000000) {
-                        controller.setProfileID(Integer.parseInt(editID.getText().toString()));
+                        //Use controller to save new profile
+                        controller.saveProfile(new ProfileObj(
+                                editName.getText().toString(),
+                                Integer.parseInt(editAge.getText().toString()),
+                                Integer.parseInt(editID.getText().toString()))
+                        );
 
                         Toast toast = Toast.makeText(getApplicationContext(), "Profile Saved!", Toast.LENGTH_LONG);
                         toast.show();
@@ -65,20 +68,24 @@ public class Profile extends AppCompatActivity {
         });
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();
-        String name = controller.getProfileName();
-        int age = controller.getProfileAge();
-        int id = controller.getProfileID();
-        if(name == null){
-            editName.setText("Name");
+        retrieve();
+
+    }
+
+    //retrieve profile
+    protected void retrieve(){
+        //retrieve profile data
+        profile = controller.retrieveProfile();
+        if(profile.getName() != null){
+            editName.setText(profile.getName());
+            editAge.setText(profile.getAge()+"");
+            editID.setText(profile.getId()+"");
         }
-        else {
-            editName.setText(name);
-            editAge.setText(age+"");
-            editID.setText(id+"");
-        }
+
     }
 
     //Create option menu
@@ -93,27 +100,34 @@ public class Profile extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.enableEditButton){
-            if(editable) {
-                //Enable edit mode
-                editName.setEnabled(true);
-                editAge.setEnabled(true);
-                editID.setEnabled(true);
-                saveButton.setVisibility(View.VISIBLE);
-                item.setChecked(true);
-                editable = false;
-            }
-            else{
-                //Disable edit mode
-                editName.setEnabled(false);
-                editAge.setEnabled(false);
-                editID.setEnabled(false);
-                saveButton.setVisibility(View.GONE);
-                item.setChecked(false);
-                editable = true;
-            }
-
+        switch(item.getItemId()){
+            case R.id.enableEditButton:
+                if(editable) {
+                    //Enable edit mode
+                    editName.setEnabled(true);
+                    editAge.setEnabled(true);
+                    editID.setEnabled(true);
+                    saveButton.setVisibility(View.VISIBLE);
+                    item.setChecked(true);
+                    editable = false;
+                }
+                else{
+                    //Disable edit mode
+                    editName.setEnabled(false);
+                    editAge.setEnabled(false);
+                    editID.setEnabled(false);
+                    saveButton.setVisibility(View.GONE);
+                    item.setChecked(false);
+                    editable = true;
+                }
+                return true;
+            //reset the profile
+            case R.id.resetMenu:
+                controller.resetProfile();
+                retrieve();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 }
