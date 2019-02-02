@@ -15,10 +15,9 @@ import android.widget.Toast;
 public class Profile extends AppCompatActivity {
 
     private SharedPreferenceController controller;
-    protected EditText editName;
-    protected Button saveButton;
-    protected MenuItem editItem;
 
+    protected EditText editName, editAge, editID;
+    protected Button saveButton;
     protected boolean editable = true;
 
     @Override
@@ -28,24 +27,42 @@ public class Profile extends AppCompatActivity {
 
         controller = new SharedPreferenceController(Profile.this);
 
+        //intitialize layout items
         editName = findViewById(R.id.nameEditText);
+        editAge = findViewById(R.id.ageEditText);
+        editID = findViewById(R.id.idEditText);
         saveButton = findViewById(R.id.saveButton);
-        editItem = findViewById(R.id.enableEditButton);
-
         saveButton.setVisibility(View.GONE);
+
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String name = controller.getProfileName();
-                editName.setText(name);
                 controller.setProfileName(editName.getText().toString());
+                controller.setProfileID(Integer.parseInt(editID.getText().toString()));
+                controller.setProfileAge(Integer.parseInt(editAge.getText().toString()));
 
                 Toast toast = Toast.makeText(getApplicationContext(), "Name Saved !", Toast.LENGTH_LONG);
                 toast.show();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String name = controller.getProfileName();
+        int age = controller.getProfileAge();
+        int id = controller.getProfileID();
+        if(name == null){
+            editName.setText("Name");
+        }
+        else {
+            editName.setText(name);
+            editAge.setText(age+"");
+            editID.setText(id+"");
+        }
     }
 
     //Create option menu
@@ -61,17 +78,21 @@ public class Profile extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == R.id.enableEditButton){
-            if(editable){
+            if(editable) {
                 //Enable edit mode
+                editName.setEnabled(true);
+                editAge.setEnabled(true);
+                editID.setEnabled(true);
                 saveButton.setVisibility(View.VISIBLE);
-                editName.setFocusable(true);
                 item.setChecked(true);
                 editable = false;
             }
             else{
                 //Disable edit mode
+                editName.setEnabled(false);
+                editAge.setEnabled(false);
+                editID.setEnabled(false);
                 saveButton.setVisibility(View.GONE);
-                editName.setFocusable(false);
                 item.setChecked(false);
                 editable = true;
             }

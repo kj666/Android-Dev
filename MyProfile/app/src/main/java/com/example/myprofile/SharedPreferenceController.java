@@ -27,7 +27,7 @@ public class SharedPreferenceController {
     }
 
     public int getProfileAge(){
-        return sharedPreferences.getInt("profileAge", null);
+        return sharedPreferences.getInt("profileAge",0);
     }
 
     public void setProfileID(int id){
@@ -37,6 +37,6 @@ public class SharedPreferenceController {
     }
 
     public int getProfileID(){
-        return sharedPreferences.getInt("profileID", );
+        return sharedPreferences.getInt("profileID", 0);
     }
 }
