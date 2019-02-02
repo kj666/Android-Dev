@@ -51,6 +51,7 @@ public class Profile extends AppCompatActivity {
                                 Integer.parseInt(editAge.getText().toString()),
                                 Integer.parseInt(editID.getText().toString()))
                         );
+                        disableEdit();
 
                         Toast toast = Toast.makeText(getApplicationContext(), "Profile Saved!", Toast.LENGTH_LONG);
                         toast.show();
@@ -85,7 +86,14 @@ public class Profile extends AppCompatActivity {
             editAge.setText(profile.getAge()+"");
             editID.setText(profile.getId()+"");
         }
+    }
 
+    protected void disableEdit(){
+        editName.setEnabled(false);
+        editAge.setEnabled(false);
+        editID.setEnabled(false);
+        saveButton.setVisibility(View.GONE);
+        editable = true;
     }
 
     //Create option menu
@@ -98,8 +106,6 @@ public class Profile extends AppCompatActivity {
     //Menu clicking
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
         switch(item.getItemId()){
             case R.id.enableEditButton:
                 if(editable) {
@@ -113,12 +119,8 @@ public class Profile extends AppCompatActivity {
                 }
                 else{
                     //Disable edit mode
-                    editName.setEnabled(false);
-                    editAge.setEnabled(false);
-                    editID.setEnabled(false);
-                    saveButton.setVisibility(View.GONE);
+                    disableEdit();
                     item.setChecked(false);
-                    editable = true;
                 }
                 return true;
             //reset the profile
