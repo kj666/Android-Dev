@@ -40,11 +40,27 @@ public class Profile extends AppCompatActivity {
             public void onClick(View v) {
 
                 controller.setProfileName(editName.getText().toString());
-                controller.setProfileID(Integer.parseInt(editID.getText().toString()));
-                controller.setProfileAge(Integer.parseInt(editAge.getText().toString()));
+                int ageValue = Integer.valueOf(editAge.getText().toString());
+                int idValue = Integer.valueOf(editID.getText().toString());
+                //validate age
+                if(ageValue>18 && ageValue <100){
+                    controller.setProfileAge(Integer.parseInt(editAge.getText().toString()));
+                    //validate ID
+                    if(idValue<1000000) {
+                        controller.setProfileID(Integer.parseInt(editID.getText().toString()));
 
-                Toast toast = Toast.makeText(getApplicationContext(), "Name Saved !", Toast.LENGTH_LONG);
-                toast.show();
+                        Toast toast = Toast.makeText(getApplicationContext(), "Profile Saved!", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                    else {
+                        Toast idToast = Toast.makeText(getApplicationContext(), "Invalid ID, maximum 6 digits", Toast.LENGTH_LONG);
+                        idToast.show();
+                    }
+                }
+                else {
+                    Toast ageToast = Toast.makeText(getApplicationContext(), "Invalid Age, must be between 18-99", Toast.LENGTH_LONG);
+                    ageToast.show();
+                }
             }
         });
     }
