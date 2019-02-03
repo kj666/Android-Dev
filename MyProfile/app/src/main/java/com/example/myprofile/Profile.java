@@ -1,8 +1,5 @@
 package com.example.myprofile;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -38,37 +35,58 @@ public class Profile extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean nameB = false, ageB = false, idB = false;
+                boolean ageIn = false;
 
-                int ageValue = Integer.valueOf(editAge.getText().toString());
-                int idValue = Integer.valueOf(editID.getText().toString());
-                //validate age
-                if(ageValue>17 && ageValue <100){
-                    //validate ID
-                    if(idValue<1000000) {
-                        //Use controller to save new profile
-                        controller.saveProfile(new ProfileObj(
-                                editName.getText().toString(),
-                                Integer.parseInt(editAge.getText().toString()),
-                                Integer.parseInt(editID.getText().toString()))
-                        );
-                        disableEdit();
+                //validate Empty name
+                if(!editName.getText().toString().matches("")){
+                    nameB = true;
+                }
+                else {
+                    nameB = false;
+                }
 
-                        Toast toast = Toast.makeText(getApplicationContext(), "Profile Saved!", Toast.LENGTH_LONG);
-                        toast.show();
+                //validate Empty age
+                if(!editAge.getText().toString().matches("")){
+                    int ageValue = Integer.valueOf(editAge.getText().toString());
+                    ageB = true;
+                    //Validate Age Value
+                    if(ageValue > 17 && ageValue < 100){
+                        ageIn = true;
                     }
                     else {
-                        Toast idToast = Toast.makeText(getApplicationContext(), "Invalid ID, maximum 6 digits", Toast.LENGTH_LONG);
-                        idToast.show();
+                        ageIn = false;
+                        Toast.makeText(getApplicationContext(), "Invalid Age, must be between 18-99", Toast.LENGTH_LONG).show();
                     }
                 }
                 else {
-                    Toast ageToast = Toast.makeText(getApplicationContext(), "Invalid Age, must be between 18-99", Toast.LENGTH_LONG);
-                    ageToast.show();
+                    ageB = false;
+                }
+
+                //validate empty id
+                if(!editID.getText().toString().matches("")){
+                    idB = true;
+                }
+                else {
+                    idB = false;
+                }
+
+                //Save profile if validation success
+                if(idB && nameB && ageB && ageIn){
+                    controller.saveProfile(new ProfileObj(
+                                    editName.getText().toString(),
+                                    Integer.parseInt(editAge.getText().toString()),
+                                    Integer.parseInt(editID.getText().toString()))
+                            );
+                    disableEdit();
+                    Toast.makeText(getApplicationContext(), "Profile Saved!", Toast.LENGTH_LONG).show();
+                }
+                else if(!(idB && nameB && ageB)){
+                    Toast.makeText(getApplicationContext(), "Some fields are empty", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
-
 
     @Override
     protected void onStart() {
@@ -126,7 +144,7 @@ public class Profile extends AppCompatActivity {
             //reset the profile
             case R.id.resetMenu:
                 controller.resetProfile();
-                retrieve();
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
