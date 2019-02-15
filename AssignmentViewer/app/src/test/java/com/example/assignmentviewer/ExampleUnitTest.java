@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.assignmentviewer;
 
 import org.junit.Test;
 
