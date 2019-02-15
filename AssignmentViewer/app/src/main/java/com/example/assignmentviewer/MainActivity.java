@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.assignmentviewer.Database.DatabaseHelper;
+import com.example.assignmentviewer.Models.Course;
 
 import java.util.ArrayList;
 import java.util.List;

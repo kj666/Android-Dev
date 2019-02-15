@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.assignmentviewer.Database.DatabaseHelper;
+import com.example.assignmentviewer.Models.Course;
 
 public class InsertCourseDialogFragment extends DialogFragment {
 

@@ -1,4 +1,4 @@
-package com.example.assignmentviewer;
+package com.example.assignmentviewer.Models;
 
 public class Course {
 

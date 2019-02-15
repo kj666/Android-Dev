@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.assignmentviewer.Course;
+import com.example.assignmentviewer.Models.Course;
 
 import java.util.ArrayList;
 import java.util.Collections;
