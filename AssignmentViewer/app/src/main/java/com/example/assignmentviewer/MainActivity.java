@@ -22,9 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected ListView courseListView;
     protected FloatingActionButton addCourseButton;
-    protected  TextView avgTextView;
-
-
+    protected TextView avgTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +44,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Use to refresh coming from another activity
     @Override
     protected void onResume() {
         super.onResume();
         loadListView();
     }
 
+    //Fill in listView
     protected void loadListView(){
         DatabaseHelper dbHelper = new DatabaseHelper(this);
+
         final List<Course> courses = dbHelper.getAllCourses();
         final double average = dbHelper.getAverageAllAssignment();
 
@@ -64,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 viewCourseAssignment(courseID,courses.get(position).getTitle(), courses.get(position).getCode() );
             }
         });
-        avgTextView.setText(String.format("%.2f", average));
+
+        avgTextView.setText("Average of All Assignments: "+String.format("%.2f", average));
         CourseListAdapter courseListAdapter = new CourseListAdapter(courses);
         courseListView.setAdapter(courseListAdapter);
     }
@@ -105,9 +107,15 @@ public class MainActivity extends AppCompatActivity {
             convertView = getLayoutInflater().inflate(R.layout.course_item, null);
             TextView courseTitle = (TextView) convertView.findViewById(R.id.itemCourseTitleTextView);
             TextView courseCode = (TextView) convertView.findViewById(R.id.itemCourseCodeTextView);
+            TextView courseAvg = (TextView) convertView.findViewById(R.id.itemCourseAvgTextView);
 
             courseTitle.setText(courses.get(position).getTitle());
             courseCode.setText(courses.get(position).getCode());
+
+            if(courses.get(position).isEmpty())
+                courseAvg.setText("Assignments Average: NA");
+            else
+                courseAvg.setText("Assignments Average: "+ courses.get(position).getAverage()+"");
             return convertView;
         }
     }

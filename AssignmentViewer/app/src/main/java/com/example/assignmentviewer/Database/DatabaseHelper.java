@@ -60,6 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    //Insert a course
     public long insertCourse(Course course){
 
         long id = -1;
@@ -83,6 +84,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    //Get All Courses
     public List<Course> getAllCourses(){
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -100,7 +102,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String title = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_TITLE));
                         String code = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_CODE));
 
-                        courses.add(new Course(id, title, code));
+                        //Get average using Query
+                        Double avg = getAverageByCourse(id);
+                        boolean isEmpty = assignmentExists(id);
+
+                        courses.add(new Course(id, title, code, avg, isEmpty));
 
                     }while(cursor.moveToNext());
 
@@ -156,6 +162,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    //Get course by ID
     public Course getCourseByID(int CourseID){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -169,8 +176,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_COURSE_ID));
                     String title = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_TITLE));
                     String code = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_CODE));
+                    Double avg = getAverageByCourse(id);
+                    boolean isEmpty = assignmentExists(id);
 
-                    return new Course(id, title, code);
+                    return new Course(id, title, code, avg, isEmpty);
                 }
             }
 
@@ -187,6 +196,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    //Get All Assignment By their course ID
     public List<Assignment> getAllAssignmentsByCourse(int CourseID){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -227,6 +237,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return Collections.emptyList();
     }
 
+    //Insert an Assignment
     public long insertAssignment(Assignment assignment){
 
         long id = -1;
@@ -251,6 +262,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    //Get average of All Assignment
     public double getAverageAllAssignment(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -278,6 +290,87 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         }
         return 0;
+    }
+
+    //Get Average By Course using Query
+    public Double getAverageByCourse(int CourseID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            //Get average using SQL
+            String query = "SELECT AVG("+Config.COLUMN_ASS_GRADE+") FROM "+ Config.ASS_TABLE_NAME+" WHERE "+Config.COLUMN_COURSE_ID+ " = " + CourseID;
+            cursor = db.rawQuery(query,null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    Log.d(TAG, "Exception: " + cursor.getDouble(0));
+                    return cursor.getDouble(0);
+                }
+            }
+        } catch (SQLException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation Failed! " + e, Toast.LENGTH_LONG).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+
+            db.close();
+
+        }
+
+        return 0.0;
+    }
+
+    //Delete a Course
+    public void deleteCourse(int CourseID){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        try {
+            db.delete(Config.ASS_TABLE_NAME, Config.COLUMN_COURSE_ID + " = ?", new String[]{CourseID+""});
+            db.delete(Config.COURSE_TABLE_NAME, Config.COLUMN_COURSE_ID + " = ?", new String[]{CourseID+""});
+
+        } catch (SQLException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation Failed! " + e, Toast.LENGTH_LONG).show();
+        } finally {
+            db.close();
+
+        }
+    }
+
+    //Check if Assignment Exists in Course
+    public boolean assignmentExists(int CourseID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            //Count Assignment per Course using SQL
+            String query = "SELECT COUNT("+Config.COLUMN_ASS_ID+") FROM "+ Config.ASS_TABLE_NAME+" WHERE "+Config.COLUMN_COURSE_ID+ " = " + CourseID;
+            cursor = db.rawQuery(query,null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+
+                    int count = cursor.getInt(0);
+                    if(count != 0)
+                        return false;
+                    else
+                        return true;
+                }
+            }
+
+        } catch (SQLException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation Failed! " + e, Toast.LENGTH_LONG).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+
+            db.close();
+
+        }
+        return false;
     }
 
 }

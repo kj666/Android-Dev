@@ -42,7 +42,7 @@ public class InsertAssignmentDialogFragment extends DialogFragment {
                 DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
                 if(!(title.equals("") || grade.equals(""))){
                     dbHelper.insertAssignment(new Assignment(courseID,title,grade));
-                    activity.loadList();
+                    activity.getAssignmentData();
                     getDialog().dismiss();
                 }
             }
@@ -55,6 +55,5 @@ public class InsertAssignmentDialogFragment extends DialogFragment {
             }
         });
         return view;
-
     }
 }

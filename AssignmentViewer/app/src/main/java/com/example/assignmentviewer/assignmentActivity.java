@@ -6,27 +6,30 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.assignmentviewer.Database.DatabaseHelper;
 import com.example.assignmentviewer.Models.Assignment;
 import com.example.assignmentviewer.Models.Course;
-import com.example.assignmentviewer.R;
+
 
 import java.util.List;
 
 public class assignmentActivity extends AppCompatActivity {
 
-
-    protected String courseTitle;
-    protected String courseCode;
+    //Variables
     protected int courseID;
+    protected Course course;
 
+    //Layout
     protected TextView courseTitleTextView;
     protected TextView courseCodeTextView;
     protected FloatingActionButton addAssButton;
     protected ListView assListView;
+    protected ImageButton imageButton;
+    protected TextView courseAvgTextView;
 
 
     @Override
@@ -38,12 +41,16 @@ public class assignmentActivity extends AppCompatActivity {
         courseCodeTextView = findViewById(R.id.AssCourseCodeTextView);
         addAssButton = findViewById(R.id.addAssingmentButton);
         assListView = findViewById(R.id.AssListView);
+        imageButton = findViewById(R.id.deleteImageButton);
+        courseAvgTextView = findViewById(R.id.AssCourseAvgTextView);
 
-        getData();
-        courseTitleTextView.setText(courseTitle);
-        courseCodeTextView.setText(courseCode);
+        getCourseData();
+        getAssignmentData();
 
-        loadList();
+        courseTitleTextView.setText(course.getTitle());
+        courseCodeTextView.setText(course.getCode());
+        courseAvgTextView.setText(course.getAverage()+"");
+
         addAssButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,25 +59,41 @@ public class assignmentActivity extends AppCompatActivity {
             }
         });
 
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteCourse();
+                finish();
+            }
+        });
     }
 
+    //Get CourseID for Fragment
     public int getCourseID(){
         return courseID;
     }
 
-    //get course data from previous intent
-    protected void getData(){
-        courseTitle = getIntent().getStringExtra("CourseTitle");
-        courseCode = getIntent().getStringExtra("CourseCode");
+    //get courseID from previous intent and lookup in DB
+    protected void getCourseData(){
         courseID = getIntent().getIntExtra("CourseID", 0);
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        course = dbHelper.getCourseByID(courseID);
     }
 
-    protected void loadList(){
+    //Load ListView
+    protected void getAssignmentData(){
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         final List<Assignment> assignments = dbHelper.getAllAssignmentsByCourse(courseID);
 
         AssListAdapter assListAdapter = new AssListAdapter(assignments);
         assListView.setAdapter(assListAdapter);
+    }
+
+    //Delete Course
+    protected void deleteCourse(){
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        dbHelper.deleteCourse(courseID);
+        getAssignmentData();
     }
 
     //Adapter for Assignment List View

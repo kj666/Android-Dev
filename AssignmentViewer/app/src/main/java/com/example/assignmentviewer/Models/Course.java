@@ -1,23 +1,32 @@
 package com.example.assignmentviewer.Models;
 
-import java.util.List;
-
 public class Course {
 
     private int ID;
-    private String Title;
-    private String Code;
-    private List<Assignment> assignments;
+    private String title;
+    private String code;
+    private Double average;
+    private boolean empty;
 
+    public Course(int ID, String title, String code, Double average, boolean empty) {
+        this.ID = ID;
+        this.title = title;
+        this.code = code;
+        this.average = average;
+        this.empty = empty;
+
+    }
     public Course(int ID, String title, String code) {
         this.ID = ID;
-        Title = title;
-        Code = code;
+        this.title = title;
+        this.code = code;
+        this.average = null;
     }
 
     public Course(String title, String code) {
-        Title = title;
-        Code = code;
+        this.title = title;
+        this.code = code;
+        this.average = null;
     }
 
     public int getID() {
@@ -29,30 +38,34 @@ public class Course {
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
 
     public String getCode() {
-        return Code;
+        return this.code;
     }
 
     public void setCode(String code) {
-        Code = code;
+        this.code = code;
     }
 
-    public void setAssignments(List<Assignment> assignments) {
-        this.assignments = assignments;
+    public Double getAverage() {
+        return average;
     }
 
-    public List<Assignment> getAssignments() {
-        return assignments;
+    public void setAverage(Double average) {
+        this.average = average;
     }
 
-    public void addAssignment(Assignment ass){
-        assignments.add(ass);
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
     }
 }
