@@ -51,14 +51,12 @@
     <ListView
         android:id="@+id/AssListView"
         android:layout_width="410dp"
-        android:layout_height="429dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/addAssingmentButton"
+        android:layout_height="427dp"
+        android:layout_marginTop="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        app:layout_constraintTop_toBottomOf="@+id/AssCourseCodeTextView" />
 
     <ImageButton
         android:id="@+id/deleteImageButton"
@@ -73,11 +71,13 @@
 
     <TextView
         android:id="@+id/AssCourseAvgTextView"
-        android:layout_width="51dp"
+        android:layout_width="69dp"
         android:layout_height="22dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:gravity="right"
         android:text="TextView"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/AssCourseTextView" />
 
@@ -85,18 +85,11 @@
         android:id="@+id/textView2"
         android:layout_width="62dp"
         android:layout_height="18dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="2dp"
         android:layout_marginRight="2dp"
         android:text="Average: "
         app:layout_constraintEnd_toStartOf="@+id/AssCourseAvgTextView"
         app:layout_constraintTop_toBottomOf="@+id/AssCourseTextView" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="395dp"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider"
-        android:visibility="visible"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="68dp" />
 </android.support.constraint.ConstraintLayout>

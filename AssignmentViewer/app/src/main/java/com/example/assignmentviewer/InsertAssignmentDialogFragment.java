@@ -12,7 +12,6 @@ import android.widget.EditText;
 
 import com.example.assignmentviewer.Database.DatabaseHelper;
 import com.example.assignmentviewer.Models.Assignment;
-import com.example.assignmentviewer.Models.Course;
 
 public class InsertAssignmentDialogFragment extends DialogFragment {
 
@@ -43,6 +42,7 @@ public class InsertAssignmentDialogFragment extends DialogFragment {
                 if(!(title.equals("") || grade.equals(""))){
                     dbHelper.insertAssignment(new Assignment(courseID,title,grade));
                     activity.getAssignmentData();
+                    activity.getCourseData();
                     getDialog().dismiss();
                 }
             }

@@ -18,7 +18,6 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-
     private Context context;
     private static final String TAG = "DatabaseHelper";
 
@@ -104,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                         //Get average using Query
                         Double avg = getAverageByCourse(id);
-                        boolean isEmpty = assignmentExists(id);
+                        boolean isEmpty = assignmentExistsPerCourse(id);
 
                         courses.add(new Course(id, title, code, avg, isEmpty));
 
@@ -130,38 +129,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Course getCourseByCode(String codeCourse) {
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-        try {
-            cursor = db.query(Config.COURSE_TABLE_NAME, null, Config.COLUMN_COURSE_CODE + " = ?", new String[]{codeCourse}, null, null, null);
-
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-
-                    int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_COURSE_ID));
-                    String title = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_TITLE));
-                    String code = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_CODE));
-
-                    return new Course(id, title, code);
-                }
-            }
-
-        } catch (SQLException e) {
-            Log.d(TAG, "Exception: " + e);
-            Toast.makeText(context, "Operation Failed! " + e, Toast.LENGTH_LONG).show();
-        } finally {
-            if (cursor != null)
-                cursor.close();
-
-            db.close();
-
-        }
-        return null;
-    }
-
     //Get course by ID
     public Course getCourseByID(int CourseID){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -177,7 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     String title = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_TITLE));
                     String code = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_CODE));
                     Double avg = getAverageByCourse(id);
-                    boolean isEmpty = assignmentExists(id);
+                    boolean isEmpty = assignmentExistsPerCourse(id);
 
                     return new Course(id, title, code, avg, isEmpty);
                 }
@@ -340,13 +307,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Check if Assignment Exists in Course
-    public boolean assignmentExists(int CourseID){
+    public boolean assignmentExistsPerCourse(int CourseID){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
         try {
             //Count Assignment per Course using SQL
             String query = "SELECT COUNT("+Config.COLUMN_ASS_ID+") FROM "+ Config.ASS_TABLE_NAME+" WHERE "+Config.COLUMN_COURSE_ID+ " = " + CourseID;
+            cursor = db.rawQuery(query,null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+
+                    int count = cursor.getInt(0);
+                    if(count != 0)
+                        return false;
+                    else
+                        return true;
+                }
+            }
+
+        } catch (SQLException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation Failed! " + e, Toast.LENGTH_LONG).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+
+            db.close();
+
+        }
+        return false;
+    }
+
+    //Check if Assignment Exists in Course
+    public boolean assignmentExists(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            //Count Assignment per Course using SQL
+            String query = "SELECT COUNT("+Config.COLUMN_ASS_ID+") FROM "+ Config.ASS_TABLE_NAME;
             cursor = db.rawQuery(query,null);
 
             if (cursor != null) {

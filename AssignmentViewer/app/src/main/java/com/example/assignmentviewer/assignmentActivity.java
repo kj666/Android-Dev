@@ -47,10 +47,6 @@ public class assignmentActivity extends AppCompatActivity {
         getCourseData();
         getAssignmentData();
 
-        courseTitleTextView.setText(course.getTitle());
-        courseCodeTextView.setText(course.getCode());
-        courseAvgTextView.setText(course.getAverage()+"");
-
         addAssButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,6 +74,13 @@ public class assignmentActivity extends AppCompatActivity {
         courseID = getIntent().getIntExtra("CourseID", 0);
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         course = dbHelper.getCourseByID(courseID);
+
+        courseTitleTextView.setText(course.getTitle());
+        courseCodeTextView.setText(course.getCode());
+        if(course.isEmpty())
+            courseAvgTextView.setText("NA");
+        else
+            courseAvgTextView.setText(course.getAverage()+"");
     }
 
     //Load ListView

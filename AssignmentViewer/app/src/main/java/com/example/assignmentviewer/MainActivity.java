@@ -7,15 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.assignmentviewer.Database.DatabaseHelper;
 import com.example.assignmentviewer.Models.Course;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -57,25 +54,26 @@ public class MainActivity extends AppCompatActivity {
 
         final List<Course> courses = dbHelper.getAllCourses();
         final double average = dbHelper.getAverageAllAssignment();
+        final boolean isEmpty = dbHelper.assignmentExists();
 
         courseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int courseID = courses.get(position).getID();
-                viewCourseAssignment(courseID,courses.get(position).getTitle(), courses.get(position).getCode() );
+                viewCourseAssignment(courses.get(position).getID());
             }
         });
 
-        avgTextView.setText("Average of All Assignments: "+String.format("%.2f", average));
+        if(isEmpty)
+            avgTextView.setText("Average of All Assignments: NA");
+        else
+            avgTextView.setText("Average of All Assignments: "+String.format("%.2f", average));
         CourseListAdapter courseListAdapter = new CourseListAdapter(courses);
         courseListView.setAdapter(courseListAdapter);
     }
 
-    protected void viewCourseAssignment(int courseID, String title, String code){
+    protected void viewCourseAssignment(int courseID){
         Intent intent = new Intent(getApplicationContext(), assignmentActivity.class);
         intent.putExtra("CourseID", courseID);
-        intent.putExtra("CourseTitle", title);
-        intent.putExtra("CourseCode", code);
         startActivity(intent);
     }
 
