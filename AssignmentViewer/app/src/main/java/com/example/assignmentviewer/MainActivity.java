@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             if(courses.get(position).isEmpty())
                 courseAvg.setText("Assignments Average: NA");
             else
-                courseAvg.setText("Assignments Average: "+ courses.get(position).getAverage()+"");
+                courseAvg.setText("Assignments Average: "+ String.format("%.2f", courses.get(position).getAverage()));
             return convertView;
         }
     }

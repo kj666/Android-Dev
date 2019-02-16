@@ -80,7 +80,7 @@ public class assignmentActivity extends AppCompatActivity {
         if(course.isEmpty())
             courseAvgTextView.setText("NA");
         else
-            courseAvgTextView.setText(course.getAverage()+"");
+            courseAvgTextView.setText(String.format("%.2f", course.getAverage()));
     }
 
     //Load ListView
@@ -130,7 +130,7 @@ public class assignmentActivity extends AppCompatActivity {
             TextView assGradeTextView = (TextView) convertView.findViewById(R.id.AssGradeTextView);
 
             assTitleTextView.setText(assignments.get(position).getTitle());
-            assGradeTextView.setText(assignments.get(position).getGrade()+"");
+            assGradeTextView.setText(String.format("%.2f", assignments.get(position).getGrade()));
             return convertView;
         }
     }
