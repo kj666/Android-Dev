@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.assignmentviewer.Models.Assignment;
 import com.example.assignmentviewer.Models.Course;
 
 import java.util.ArrayList;
@@ -85,7 +86,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Course> getAllCourses(){
 
         SQLiteDatabase db = this.getReadableDatabase();
-
         Cursor cursor = null;
 
         try{
@@ -96,7 +96,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     List<Course> courses = new ArrayList<>();
 
                     do{
-
                         int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_COURSE_ID));
                         String title = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_TITLE));
                         String code = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_CODE));
@@ -155,6 +154,130 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         }
         return null;
+    }
+
+    public Course getCourseByID(int CourseID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(Config.COURSE_TABLE_NAME, null, Config.COLUMN_COURSE_ID + " = ?", new String[]{CourseID+""}, null, null, null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+
+                    int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_COURSE_ID));
+                    String title = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_TITLE));
+                    String code = cursor.getString(cursor.getColumnIndex(Config.COLUMN_COURSE_CODE));
+
+                    return new Course(id, title, code);
+                }
+            }
+
+        } catch (SQLException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation Failed! " + e, Toast.LENGTH_LONG).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+
+            db.close();
+
+        }
+        return null;
+    }
+
+    public List<Assignment> getAllAssignmentsByCourse(int CourseID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try{
+            cursor = db.query(Config.ASS_TABLE_NAME, null, Config.COLUMN_COURSE_ID+" = ?", new String[]{CourseID+""}, null, null, null);
+
+            if(cursor != null){
+                if(cursor.moveToFirst()){
+                    List<Assignment> assignments = new ArrayList<>();
+
+                    do{
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_ASS_ID));
+                        int courseID = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_COURSE_ID));
+                        String title = cursor.getString(cursor.getColumnIndex(Config.COLUMN_ASS_TITLE));
+                        double grade = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_ASS_GRADE));
+
+                        assignments.add(new Assignment(id, courseID, title, grade));
+
+                    }while(cursor.moveToNext());
+
+                    return assignments;
+                }
+            }
+        }
+        catch (SQLException e){
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation Failed! " +e, Toast.LENGTH_LONG).show();
+        }
+        finally {
+            if(cursor != null)
+                cursor.close();
+
+            db.close();
+
+        }
+
+        return Collections.emptyList();
+    }
+
+    public long insertAssignment(Assignment assignment){
+
+        long id = -1;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(Config.COLUMN_ASS_TITLE, assignment.getTitle());
+        contentValues.put(Config.COLUMN_ASS_GRADE, assignment.getGrade());
+        contentValues.put(Config.COLUMN_COURSE_ID, assignment.getCourseID());
+
+        try {
+            id = db.insertOrThrow(Config.ASS_TABLE_NAME, null, contentValues);
+        }
+        catch (SQLException e){
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation Failed! " +e, Toast.LENGTH_LONG).show();
+        }
+        finally {
+            db.close();
+        }
+        return id;
+    }
+
+    public double getAverageAllAssignment(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            //Get average using SQL
+            String query = "SELECT AVG("+Config.COLUMN_ASS_GRADE+") FROM "+ Config.ASS_TABLE_NAME;
+            cursor = db.rawQuery(query,null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+
+                    return cursor.getDouble(0);
+                }
+            }
+
+        } catch (SQLException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation Failed! " + e, Toast.LENGTH_LONG).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+
+            db.close();
+
+        }
+        return 0;
     }
 
 }

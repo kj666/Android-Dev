@@ -1,10 +1,13 @@
 package com.example.assignmentviewer.Models;
 
+import java.util.List;
+
 public class Course {
 
     private int ID;
     private String Title;
     private String Code;
+    private List<Assignment> assignments;
 
     public Course(int ID, String title, String code) {
         this.ID = ID;
@@ -39,5 +42,17 @@ public class Course {
 
     public void setCode(String code) {
         Code = code;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
+    }
+
+    public List<Assignment> getAssignments() {
+        return assignments;
+    }
+
+    public void addAssignment(Assignment ass){
+        assignments.add(ass);
     }
 }

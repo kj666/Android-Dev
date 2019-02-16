@@ -9,13 +9,13 @@
     <ListView
         android:id="@+id/courseListView"
         android:layout_width="match_parent"
-        android:layout_height="529dp"
+        android:layout_height="484dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp" />
+        android:layout_marginTop="45dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addCourseButton"
@@ -29,4 +29,16 @@
         android:layout_marginBottom="11dp"
         android:clickable="true"
         app:srcCompat="@android:drawable/ic_input_add" />
+
+    <TextView
+        android:id="@+id/assAverageTextView"
+        android:layout_width="383dp"
+        android:layout_height="33dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="4dp"
+        android:text="TextView" />
 </RelativeLayout>
